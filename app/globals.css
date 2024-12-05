@@ -2,26 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+*,
+*::before,
+*::after {
+  transition:
+    background-color 0.3s,
+    border 0.3s;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.FormRow:has(button) {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.2rem;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.font-sono {
+  font-family: var(--fontFamily_Sono);
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.recharts-pie-label-text {
+  font-weight: 600;
+}
+
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: var(--color-grey-300);
 }
