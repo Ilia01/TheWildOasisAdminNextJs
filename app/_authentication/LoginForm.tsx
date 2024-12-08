@@ -9,20 +9,19 @@ import SpinnerMini from "../_components/SpinnerMini";
 import { login } from "../_lib/actions";
 
 function LoginForm() {
-  const [email, setEmail] = useState("giorgi.gamertube@gmail.com");
-  const [password, setPassword] = useState("giorgi205208");
+  // const [email, setEmail] = useState("giorgi.gamertube@gmail.com");
+  // const [password, setPassword] = useState("giorgi205208");
 
   async function clientAction(FormData: FormData) {
     const email = FormData.get("email");
     const password = FormData.get("password");
     if (!email || !password) return;
-    
+
     const res = await login(FormData);
 
-    if (res.ok === true) {
-      queryClient.setQueryData(["user"], user.user);
-      router.replace("/authenticated/dashboard");
-    }
+    // if (res.ok === true) {
+    //   router.replace("/authenticated/dashboard");
+    // }
   }
 
   return (
@@ -33,11 +32,11 @@ function LoginForm() {
           id="email"
           // This makes this form better for password managers
           autoComplete="username"
-          value={email}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setEmail(e.target.value)
-          }
-          disabled={isLoading}
+          // value={email}
+          // onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          //   setEmail(e.target.value)
+          // }
+          // disabled={isLoading}
         />
       </FormRowVertical>
       <FormRowVertical label="Password">
@@ -45,16 +44,17 @@ function LoginForm() {
           type="password"
           id="password"
           autoComplete="current-password"
-          value={password}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setPassword(e.target.value)
-          }
-          disabled={isLoading}
+          // value={password}
+          // onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          //   setPassword(e.target.value)
+          // }
+          // disabled={isLoading}
         />
       </FormRowVertical>
       <FormRowVertical>
         <Button size="large">
-          {!isLoading ? `Login in` : <SpinnerMini />}
+          {/* {!isLoading ? `Login in` : <SpinnerMini />} */}
+          Login in
         </Button>
       </FormRowVertical>
     </Form>

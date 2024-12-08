@@ -1,5 +1,7 @@
 "use server";
+import { redirect } from "next/navigation";
 import supabase, { supabaseUrl } from "./supabase";
+import { signIn } from "./auth";
 
 export async function editCabin(formData: FormData) {}
 export async function createCabin(formData: FormData) {}
@@ -22,17 +24,25 @@ export async function signup(formData: FormData) {
 }
 
 export async function login(formData: FormData) {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+  try {
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+    console.log("this is response", res);
 
-  if (error) throw new Error(error.message);
+    // if (error) throw new Error(error.message);
 
-  return data;
+    // redirect("/authenticated/dashboard");
+    return { ok: true };
+  } catch (err) {
+    console.error(err);
+    return { ok: false, error: err };
+  }
 }
 
 export async function getCurrentUser() {

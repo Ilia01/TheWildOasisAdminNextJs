@@ -1,6 +1,5 @@
 "use client";
 
-import styled from "styled-components";
 import BookingDataBox from "../bookings/BookingDataBox";
 
 import Row from "../../_components/Row";
@@ -17,14 +16,6 @@ import { formatCurrency } from "../../_utils/helpers";
 import { useCheckin } from "./useCheckin";
 import { useSettings } from "../settings/useSettings";
 import { useRouter } from "next/navigation";
-
-const Box = styled.div`
-  /* Box */
-  background-color: var(--color-grey-0);
-  border: 1px solid var(--color-grey-100);
-  border-radius: var(--border-radius-md);
-  padding: 2.4rem 4rem;
-`;
 
 function CheckinBooking() {
   const [confirmPaid, setConfirmPaid] = useState(false);
@@ -78,7 +69,7 @@ function CheckinBooking() {
       <BookingDataBox booking={booking} />
 
       {!hasBreakfast && (
-        <Box>
+        <div className="rounded-[7px] border border-gray-100 bg-white px-[4rem] py-[2.4rem] dark:border-gray-800 dark:bg-gray-0">
           <Checkbox
             checked={addBreakfast}
             onChange={() => {
@@ -89,7 +80,7 @@ function CheckinBooking() {
           >
             Want to add breakfast for {formatCurrency(optionalBreakfastPrice)}?
           </Checkbox>
-        </Box>
+        </div>
       )}
 
       <Box>

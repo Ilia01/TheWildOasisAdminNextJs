@@ -19,6 +19,7 @@ function Input({
     <input
       type={type}
       id={id}
+      name={type}
       autoComplete={autoComplete}
       value={value}
       onChange={onChange}
