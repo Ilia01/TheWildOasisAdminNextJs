@@ -7,25 +7,31 @@ import Input from "../_components/Input";
 import FormRowVertical from "../_components/FormRowVertical";
 import SpinnerMini from "../_components/SpinnerMini";
 import { login } from "../_lib/actions";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 function LoginForm() {
   // const [email, setEmail] = useState("giorgi.gamertube@gmail.com");
   // const [password, setPassword] = useState("giorgi205208");
+  const { data: session } = useSession();
 
   async function clientAction(FormData: FormData) {
     const email = FormData.get("email");
     const password = FormData.get("password");
-    if (!email || !password) return;
+    if (!email || !password)
+      return toast.error("Both credentials are required");
 
     const res = await login(FormData);
 
     // if (res.ok === true) {
     //   router.replace("/authenticated/dashboard");
     // }
+    if (res?.error) toast.error(res.error);
   }
 
   return (
     <Form action={clientAction}>
+      <p>{JSON.stringify(session)}</p>
       <FormRowVertical label="Email address">
         <Input
           type="email"

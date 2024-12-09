@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-import { DarkModeProvider } from "./_context/DarkModeContext";
-import ToastProvider from "./_utils/ToastProvider";
-import ReactQueryProvider from "./_utils/ReactQueryProvider";
 import { Poppins, Sono } from "next/font/google";
+import ClientProviders from "./_utils/ClientProviders";
 
 const poppins = Poppins({
   weight: ["300", "400", "500", "600", "700", "800", "900"],
@@ -35,11 +33,7 @@ export default function RootLayout({
       <body
         className={`${poppins.className} ${sono.variable} text-[1.4rem] text-gray-700 dark:text-gray-200`}
       >
-        <ReactQueryProvider>
-          <DarkModeProvider>
-            <ToastProvider>{children}</ToastProvider>
-          </DarkModeProvider>
-        </ReactQueryProvider>
+        <ClientProviders>{children}</ClientProviders>
       </body>
     </html>
   );

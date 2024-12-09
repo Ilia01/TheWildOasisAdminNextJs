@@ -1,9 +1,14 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "../_lib/auth";
+import { auth } from "../_lib/auth";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request) {
-  const session = await getServerSession(authOptions);
+export async function GET() {
+  const session = await auth();
+  console.log(session);
+
+  if (!session)
+    return new NextResponse(JSON.stringify({ error: "unauthrorized" }), {
+      status: 401,
+    });
 
   return NextResponse.json({ authenticated: !!session });
 }

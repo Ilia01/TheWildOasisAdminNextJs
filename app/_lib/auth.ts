@@ -1,97 +1,58 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import prisma from "./db";
-import { compare } from "bcrypt";
+import NextAuth, { NextAuthConfig } from "next-auth";
 import { Prisma } from "@prisma/client";
+import prisma from "./db";
+import { compare } from "bcryptjs";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 
-export const authOptions: NextAuthOptions = {
-  session: {
-    strategy: "jwt",
-  },
+export const authOptions: NextAuthConfig = {
+  adapter: PrismaAdapter(prisma),
+  session: { strategy: "jwt" },
   providers: [
     CredentialsProvider({
       name: "Sign in",
       credentials: {
-        email: {
-          label: "Email",
-          type: "email",
-          placeholder: "example@gmail.com",
-        },
+        email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        console.log("it should be working???!?!?");
-        if (!credentials?.email || !credentials.password) return null;
+        try {
+          if (!credentials?.email || !credentials.password)
+            throw new Error("Both credentials are required");
 
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email,
-          },
-        });
+          const user = await prisma.user.findUnique({
+            where: {
+              email: credentials.email as string,
+            },
+          });
 
-        if (!user) return null;
+          if (!user) throw new Error("User not registered");
 
-        const isPasswordValid = await compare(
-          credentials.password,
-          user.password,
-        );
+          const isPasswordValid = await compare(
+            credentials.password as string,
+            user.password,
+          );
 
-        if (!isPasswordValid) return null;
+          if (!isPasswordValid) throw new Error("Invalid password");
 
-        return {
-          id: user.id + "",
-          email: user.email,
-          name: user.name,
-        };
+          return {
+            id: user.id + "",
+            email: user.email,
+            name: user.name,
+          };
+        } catch (error) {
+          console.error(error);
+          if (error) throw new Error(error?.message);
+        }
       },
-      // async signIn(formData) {
-      //   // if (!email || !password) {
-      //   //   throw new Error("Email and password are required");
-      //   // }
-      //   // // Fetch the user from the database
-      //   // const user = await prisma.user.findUnique({
-      //   //   where: { email },
-      //   // });
-      //   // if (!user) {
-      //   //   throw new Error("User not found");
-      //   // }
-      //   // // Validate the password
-      //   // const isPasswordValid = await compare(password, user.password);
-      //   // if (!isPasswordValid) {
-      //   //   throw new Error("Invalid password");
-      //   // }
-      //   // // Generate a JWT token (or any session-related response based on your `authorize` logic)
-      //   // const sessionData = {
-      //   //   id: user.id,
-      //   //   email: user.email,
-      //   //   name: user.name,
-      //   // };
-      //   // return sessionData; // Pass this to your client or further processing
-      // },
     }),
   ],
   pages: {
     signIn: "/",
-    // error: "/error",
+    error: "/",
   },
   callbacks: {
-    // async redirect({ url, baseUrl }) {
-    //   if (url === baseUrl) {
-    //     return `${baseUrl}/authenticated/dashboard`;
-    //   }
-    //   return url;
-    // },
-    session({ session, token }) {
-      console.log("session", { session, token });
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: token.id,
-        },
-      };
-    },
-    jwt({ token, user }) {
+    async jwt({ token, user }) {
       if (user) {
         const u = user as unknown as Prisma.UserCreateInput;
         return {
@@ -99,10 +60,25 @@ export const authOptions: NextAuthOptions = {
           id: u.id,
         };
       }
+
       return token;
+    },
+
+    async session({ session, token }) {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.id as string,
+        },
+      };
     },
   },
 };
 
-export const { handler, auth, signIn, signOut } = NextAuth(authOptions);
-export { handler as GET, handler as POST };
+export const {
+  handlers: { GET, POST },
+  auth,
+  signIn,
+  signOut,
+} = NextAuth(authOptions);
