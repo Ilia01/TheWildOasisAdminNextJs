@@ -6,27 +6,46 @@ import Form from "../_components/Form";
 import Input from "../_components/Input";
 import FormRowVertical from "../_components/FormRowVertical";
 import SpinnerMini from "../_components/SpinnerMini";
-import { login } from "../_lib/actions";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 
 function LoginForm() {
-  // const [email, setEmail] = useState("giorgi.gamertube@gmail.com");
-  // const [password, setPassword] = useState("giorgi205208");
   const { data: session } = useSession();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   async function clientAction(FormData: FormData) {
     const email = FormData.get("email");
     const password = FormData.get("password");
-    if (!email || !password)
+    if (!email || !password) {
       return toast.error("Both credentials are required");
+    }
 
-    const res = await login(FormData);
+    setIsLoading(true);
 
-    // if (res.ok === true) {
-    //   router.replace("/authenticated/dashboard");
-    // }
-    if (res?.error) toast.error(res.error);
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success("Login successful");
+        // Handle successful login, e.g., redirect to dashboard
+      } else {
+        toast.error(data.message || "Login failed");
+      }
+    } catch (error) {
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -36,13 +55,10 @@ function LoginForm() {
         <Input
           type="email"
           id="email"
-          // This makes this form better for password managers
           autoComplete="username"
-          // value={email}
-          // onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          //   setEmail(e.target.value)
-          // }
-          // disabled={isLoading}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          disabled={isLoading}
         />
       </FormRowVertical>
       <FormRowVertical label="Password">
@@ -50,17 +66,14 @@ function LoginForm() {
           type="password"
           id="password"
           autoComplete="current-password"
-          // value={password}
-          // onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          //   setPassword(e.target.value)
-          // }
-          // disabled={isLoading}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          disabled={isLoading}
         />
       </FormRowVertical>
       <FormRowVertical>
-        <Button size="large">
-          {/* {!isLoading ? `Login in` : <SpinnerMini />} */}
-          Login in
+        <Button size="large" disabled={isLoading}>
+          {isLoading ? <SpinnerMini /> : "Login"}
         </Button>
       </FormRowVertical>
     </Form>
