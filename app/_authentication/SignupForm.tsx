@@ -1,13 +1,18 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import Button from "../_components/Button";
 import Form from "../_components/Form";
 import FormRow from "../_components/FormRow";
 import Input from "../_components/Input";
 import { useSignup } from "./useSignup";
 
-// Email regex: /\S+@\S+\.\S+/
+interface SignupFormData {
+  fullName: string;
+  email: string;
+  password: string;
+  passwordConfirm: string;
+}
 
 function SignupForm() {
   const { signup, isLoading } = useSignup();
@@ -17,11 +22,12 @@ function SignupForm() {
     getValues,
     handleSubmit,
     reset,
-  } = useForm();
+  } = useForm<SignupFormData>();
 
-  function onSubmit({ fullName, email, password }) {
+  const onSubmit: SubmitHandler<SignupFormData> = (data) => {
+    const { fullName, email, password } = data;
     signup({ fullName, email, password }, { onSettled: reset });
-  }
+  };
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
@@ -81,7 +87,6 @@ function SignupForm() {
       </FormRow>
 
       <FormRow>
-        {/* type is an HTML attribute! */}
         <Button
           variation="secondary"
           type="reset"
@@ -90,7 +95,7 @@ function SignupForm() {
         >
           Cancel
         </Button>
-        <Button disabled={isLoading}>Create new user</Button>
+        <Button type="submit" disabled={isLoading}>Create new user</Button>
       </FormRow>
     </Form>
   );

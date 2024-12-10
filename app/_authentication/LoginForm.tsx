@@ -1,19 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Button from "../_components/Button";
 import Form from "../_components/Form";
 import Input from "../_components/Input";
 import FormRowVertical from "../_components/FormRowVertical";
 import SpinnerMini from "../_components/SpinnerMini";
-import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 
 function LoginForm() {
-  const { data: session } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   async function clientAction(FormData: FormData) {
     const email = FormData.get("email");
@@ -37,7 +37,8 @@ function LoginForm() {
 
       if (res.ok) {
         toast.success("Login successful");
-        // Handle successful login, e.g., redirect to dashboard
+        localStorage.setItem('token', data.token);
+        router.push('/authenticated/dashboard');
       } else {
         toast.error(data.message || "Login failed");
       }
@@ -50,7 +51,6 @@ function LoginForm() {
 
   return (
     <Form action={clientAction}>
-      <p>{JSON.stringify(session)}</p>
       <FormRowVertical label="Email address">
         <Input
           type="email"

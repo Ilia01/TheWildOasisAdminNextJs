@@ -1,4 +1,6 @@
-type InputProps = {
+import React from 'react';
+
+type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   type: string;
   id: string;
   autoComplete: string;
@@ -14,6 +16,7 @@ function Input({
   value,
   onChange,
   disabled,
+  ...rest
 }: InputProps) {
   return (
     <input
@@ -25,6 +28,7 @@ function Input({
       onChange={onChange}
       disabled={disabled}
       className="rounded-md border border-gray-300 bg-white px-[1.2rem] py-[0.8rem] shadow-[0_0_0_rgba(0,0,0,0.04)] dark:border-gray-600 dark:bg-gray-0 dark:shadow-[0_0_0_rgba(0,0,0,0.4)]"
+      {...rest}
     />
   );
 }
