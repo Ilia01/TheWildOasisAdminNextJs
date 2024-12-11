@@ -1,9 +1,5 @@
 module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'jsdom',
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
-  transform: {
-    '^.+\\.tsx?$': 'ts-jest',
-  },
+  testEnvironment: 'node', // Use Node.js environment for backend testing
+  testPathIgnorePatterns: ['/node_modules/', '/dist/'], // Ignore non-test directories
+  moduleFileExtensions: ['js', 'json', 'node'], // Recognize these file types
 };
