@@ -6,6 +6,7 @@ type ButtonProps = {
   children: React.ReactNode;
   disabled?: boolean;
   onClick?: () => void;
+  type?: "button" | "submit" | "reset";
 };
 
 function Button({
@@ -14,6 +15,7 @@ function Button({
   disabled = false,
   children,
   onClick,
+  type
 }: ButtonProps) {
   const sizeStyles = {
     small: tw(
@@ -36,6 +38,7 @@ function Button({
       disabled={disabled}
       onClick={onClick}
       className={`rounded-md shadow-[0_0_0_rgba(0,0,0,0.04)] dark:shadow-[0_0_0_rgba(0,0,0,0.4)] ${sizeStyles[size]} ${variationsStyles[variation]}`}
+      type={type}
     >
       {children}
     </button>

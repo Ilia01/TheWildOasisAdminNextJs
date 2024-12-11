@@ -1,6 +1,5 @@
 "use client";
 
-import { SessionProvider } from "next-auth/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import { DarkModeProvider } from "../_context/DarkModeContext";
@@ -16,7 +15,6 @@ const queryClient = new QueryClient({
 
 function ClientProviders({ children }: { children: React.ReactNode }) {
   return (
-    <SessionProvider>
       <QueryClientProvider client={queryClient}>
         <DarkModeProvider>
           {children}
@@ -43,7 +41,6 @@ function ClientProviders({ children }: { children: React.ReactNode }) {
           />
         </DarkModeProvider>
       </QueryClientProvider>
-    </SessionProvider>
   );
 }
 

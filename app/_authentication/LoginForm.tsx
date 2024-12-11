@@ -25,7 +25,7 @@ function LoginForm() {
     setIsLoading(true);
 
     try {
-      const res = await fetch('/api/login', {
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ function LoginForm() {
         />
       </FormRowVertical>
       <FormRowVertical>
-        <Button size="large" disabled={isLoading}>
+        <Button size="large" disabled={isLoading} type="submit">
           {isLoading ? <SpinnerMini /> : "Login"}
         </Button>
       </FormRowVertical>
